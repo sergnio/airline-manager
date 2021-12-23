@@ -12,10 +12,17 @@
 // https://on.cypress.io/introduction-to-cypress
 
 describe("example to-do app", () => {
+  let abort = false;
+
   beforeEach(() => {
     cy.login();
   });
 
+  /*
+  1 - plane 0% use
+  2 - choose a route (to see the Pax, must be >= 1190)
+  3 - schedule
+  */
   it("navigate to the scheduling page", () => {
     cy.visit("https://tycoon.airlines-manager.com/network/planning");
 
@@ -32,27 +39,52 @@ describe("example to-do app", () => {
     //   );
     // });
 
+    // Look in the box that has all aircrafts
     cy.get(".aircraftsBox").each(($el, index, $list) => {
- 
-      cy.wrap($el).within(() => {
-        cy.get("div.aircraftListMiniBox").each(($element) => {
-          const matchesZeroPercent = cy.wrap($element).contains("0%");
-          if (matchesZeroPercent) {
-            cy.wrap($element).click();
-            cy.log('matches!!')
-          } else {
-            cy.log('doesnt match')
-          }
-        });
-      });
+      // within that, find the "boxes" which have 6 aircrafts
+      cy.get("div.aircraftListMiniBox").each(($element) => {
+        const matchesZeroPercent = cy.wrap($element).contains("0%");
 
-      // cy.get("div.aircraftListMiniBox").each(($el, index, $list) => {
-      // if (cy.contains(" • Use : 0%").length > 0) {
-      //   cy.log('contains 0%')
-      // } else {
-      //   cy.log('does not contain')
-      // }
-      // });
+        if (matchesZeroPercent) {
+          cy.wrap($element).click();
+
+          // now find the routes which have 1190 passengers
+          // ** iterate over the routes **
+          cy.get("span.lineList").each(($line) => {
+            cy.log("should abort: " + abort);
+            if (abort) {
+              cy.log("aborting");
+              cy.wait(2000);
+              return false;
+            }
+
+            cy.wrap($line).click();
+
+            const returnVal = cy.get("tr#demandDay0 td.greenBonus").invoke(
+              "text",
+              (index, theText) => {
+                // text is formatted like "1190 PAX"
+                const paxValue = theText.split(" ")[0];
+
+                if (paxValue >= 1195) {
+                  cy.get("td#caseIndex0").click();
+                  cy.log("Great success", paxValue);
+                  
+                  cy.get("img.planningDuplicate").first().click();
+                  abort = true;
+                  cy.wait(2000);
+                  return false;
+                } else {
+                  cy.log("not enough pax", paxValue);
+                }
+              }
+            );
+            
+          });
+        } else {
+          cy.log("doesnt match");
+        }
+      });
     });
   });
 
