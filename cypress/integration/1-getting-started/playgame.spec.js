@@ -23,25 +23,29 @@ describe("example to-do app", () => {
     cy.wait(500);
     // this can be dynamic
     cy.get("span#airport_52").click();
+    cy.wait(1000);
 
-    cy.get("div#aircraftList").within(() => {
-      cy.waitUntil(
-        () => cy.get("div.loadingWheel").should("have.class", "hidden"),
-        { timeout: 2000 }
-      );
-    }); 
+    // cy.get("div#aircraftList").within(() => {
+    //   cy.waitUntil(
+    //     () => cy.get("div.loadingWheel").should("have.class", "hidden"),
+    //     { timeout: 2000 }
+    //   );
+    // });
 
     cy.get(".aircraftsBox").each(($el, index, $list) => {
-      cy.wrap($el).within($el, () => {
-        cy.contains('0%').click()
-      })
+ 
+      cy.wrap($el).within(() => {
+        cy.get("div.aircraftListMiniBox").each(($element) => {
+          cy.wrap($element).click();
+        });
+      });
 
       // cy.get("div.aircraftListMiniBox").each(($el, index, $list) => {
-        // if (cy.contains(" • Use : 0%").length > 0) {
-        //   cy.log('contains 0%')
-        // } else {
-        //   cy.log('does not contain')
-        // }
+      // if (cy.contains(" • Use : 0%").length > 0) {
+      //   cy.log('contains 0%')
+      // } else {
+      //   cy.log('does not contain')
+      // }
       // });
     });
   });
