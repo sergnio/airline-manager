@@ -36,7 +36,13 @@ describe("example to-do app", () => {
  
       cy.wrap($el).within(() => {
         cy.get("div.aircraftListMiniBox").each(($element) => {
-          cy.wrap($element).click();
+          const matchesZeroPercent = cy.wrap($element).contains("0%");
+          if (matchesZeroPercent) {
+            cy.wrap($element).click();
+            cy.log('matches!!')
+          } else {
+            cy.log('doesnt match')
+          }
         });
       });
 
