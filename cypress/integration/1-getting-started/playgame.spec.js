@@ -18,23 +18,28 @@ describe("example to-do app", () => {
 
   it("navigate to the scheduling page", () => {
     cy.visit("https://tycoon.airlines-manager.com/network/planning");
+
     cy.contains(" Use -").click();
+    cy.wait(500);
     // this can be dynamic
     cy.get("span#airport_52").click();
-    cy.get('div#aircraftList').within(() => {
+
+    cy.get("div#aircraftList").within(() => {
       cy.waitUntil(
-        () =>
-          cy.get(".loadingWheel").should("have.class", "hidden"),
-        { timeout: 5000 }
+        () => cy.get("div.loadingWheel").should("have.class", "hidden"),
+        { timeout: 2000 }
       );
-    })
+    }); 
 
     cy.get(".aircraftsBox").each(($el, index, $list) => {
-      cy.log($list);
-      cy.log($list.length);
-      // if ($el.text().includes(' • Use : 0%')) {
-      cy.wrap($el).click({ force: true });
-      // }
+      cy.log($el.text()); 
+      // cy.get("div.aircraftListMiniBox").each(($el, index, $list) => {
+        // if (cy.contains(" • Use : 0%").length > 0) {
+        //   cy.log('contains 0%')
+        // } else {
+        //   cy.log('does not contain')
+        // }
+      // });
     });
   });
 
