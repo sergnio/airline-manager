@@ -32,7 +32,10 @@ describe("example to-do app", () => {
     }); 
 
     cy.get(".aircraftsBox").each(($el, index, $list) => {
-      cy.log($el.text()); 
+      cy.wrap($el).within($el, () => {
+        cy.contains('0%').click()
+      })
+
       // cy.get("div.aircraftListMiniBox").each(($el, index, $list) => {
         // if (cy.contains(" • Use : 0%").length > 0) {
         //   cy.log('contains 0%')
