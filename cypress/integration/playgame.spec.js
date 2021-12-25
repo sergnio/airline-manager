@@ -20,7 +20,7 @@ const filePath = "cypress/fixtures/shouldContinueFindingRoutes.txt";
  * @param {number} routeIndex
  * @param {array} routeList
  */
-const findRoute = (planeIndex, planeList, routeIndex, routeList) => {
+const findRoute = (planeIndex, planeList) => {
   cy.wrap(planeList[planeIndex])
     .contains(": 0%")
     .click()
@@ -28,35 +28,36 @@ const findRoute = (planeIndex, planeList, routeIndex, routeList) => {
       // base case - if we're at the end, break out
       if (planeIndex >= planeList.length) {
         cy.log("exiting");
-        cy.exec("exit", { timeout: 1 });
+        return;
       }
 
-      cy.log("actual route", routeList[routeIndex]);
-      cy.get(routeList[routeIndex]).click();
+      cy.get("span.lineList").each(($route) => {
+        cy.wrap($route).click();
 
-      const routePAX = "tr#demandDay0 td.greenBonus";
-      cy.get(routePAX)
-        .first()
-        .invoke("text", (_, theText) => {
-          // text is formatted like "1190 PAX"
-          const paxValue = theText.split(" ")[0];
+        const routePAX = "tr#demandDay0 td.greenBonus";
+        cy.get(routePAX)
+          .first()
+          .invoke("text", (_, theText) => {
+            // text is formatted like "1190 PAX"
+            const paxValue = theText.split(" ")[0];
 
-          if (paxValue >= 1195) {
-            // selects the routes for all days and saves it
-            cy.get("td#caseIndex0").click();
-            cy.log("Great success", paxValue);
-            cy.get("img.planningDuplicate").first().click();
-            cy.get("input#planningSubmit")
-              .click()
-              .then(() => {
-                cy.log("clicked submit.. recursing");
-                cy.wait(4000);
-                findRoute(planeIndex + 1, planeList, 0, routeList);
-              });
-          } else {
-            cy.log("not enough pax.. not recursing", paxValue);
-          }
-        });
+            if (paxValue >= 1195) {
+              // selects the routes for all days and saves it
+              cy.get("td#caseIndex0").click();
+              cy.log("Great success", paxValue);
+              cy.get("img.planningDuplicate").first().click();
+              cy.get("input#planningSubmit")
+                .click()
+                .then(() => {
+                  cy.log("clicked submit.. recursing");
+                  cy.wait(4000);
+                  findRoute(planeIndex + 1, planeList);
+                });
+            } else {
+              cy.log("not enough pax.. not recursing", paxValue);
+            }
+          });
+      });
     });
 };
 
@@ -79,9 +80,8 @@ describe("example to-do app", () => {
           // now find the routes which have 1195 passengers
           // ** iterate over the routes **
           // loop thru each route
-          cy.get("span.lineList").each(($route, routeIndex, routeList) => {
-            findRoute(planeIndex, planeList, routeIndex, routeList, $route);
-          });
+
+          findRoute(planeIndex, planeList);
         }
       );
     });
