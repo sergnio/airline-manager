@@ -8,5 +8,5 @@ add contents, and replacing the `your-username` and `your-password` with your ac
 {
     "username": "your-username",
     "password": "your-password"
-  }
+}
 ```
