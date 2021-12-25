@@ -28,63 +28,44 @@ describe("example to-do app", () => {
       // within that, find the "boxes" which have 6 aircrafts
 
       // loop through each of the planes (6 times)
-      let planeArray = [];
+      cy.get("div.aircraftListMiniBox").each(($plane) => {
+        cy.wrap($plane).contains(": 0%").click();
 
-      cy.get("div.aircraftListMiniBox")
-        .each((plane) => {
-          planeArray.push(plane);
-        })
-        .then((plane) => {
-          for (let i = 0; i < planeArray.length; i++) {
-            // each of the lines -- function findRoute(currentIndex)
-              // find < 1195
-                // findRoute(index + 1)
-          }
-          // todo - this doesn't work...
-          cy.wrap($plane).contains(": 0%").click();
+        // now find the routes which have 1195 passengers
+        // ** iterate over the routes **
+        // loop thru each route
+        cy.get("span.lineList").each(($line) => {
+          // cy.log("use1195 value:", found1195);
+          // if we've found it, just break it out
+          cy.wrap($line).click();
 
-          // now find the routes which have 1195 passengers
-          // ** iterate over the routes **
-          // loop thru each route
-          cy.get("span.lineList").each(($line) => {
-            Cypress._savedData.found = false;
-            // cy.log("use1195 value:", found1195);
-            // if we've found it, just break it out
-            if (Cypress._savedData.found === true) {
-              cy.log("found this to be true");
-              cy.wait(20000);
-              return false;
-            }
+          const routePAX = "tr#demandDay0 td.greenBonus";
+          cy.get(routePAX)
+            .first()
+            .invoke("text", (_, theText) => {
+              // text is formatted like "1190 PAX"
+              const paxValue = theText.split(" ")[0];
 
-            cy.wrap($line).click();
-
-            const routePAX = "tr#demandDay0 td.greenBonus";
-            cy.get(routePAX)
-              .first()
-              .invoke("text", (_, theText) => {
-                // text is formatted like "1190 PAX"
-                const paxValue = theText.split(" ")[0];
-
-                if (paxValue >= 1195) {
-                  // selects the routes for all days and saves it
-                  cy.get("td#caseIndex0").click();
-                  cy.log("Great success", paxValue);
-                  cy.get("img.planningDuplicate").first().click();
-                  cy.get("input#planningSubmit")
-                    .click()
-                    .then(() => {
-                      cy.log("exiting");
-                      cy.exec("exit", { timeout: 1 });
-                    });
-                  return false;
-                } else {
-                  cy.log("not enough pax", paxValue).then(() => {
-                    cy.log("setting this to false");
+              if (paxValue >= 1195) {
+                // selects the routes for all days and saves it
+                cy.get("td#caseIndex0").click();
+                cy.log("Great success", paxValue);
+                cy.get("img.planningDuplicate").first().click();
+                cy.get("input#planningSubmit")
+                  .click()
+                  .then(() => {
+                    cy.log("exiting");
+                    cy.exec("exit", { timeout: 1 });
                   });
-                }
-              });
-          });
+                return false;
+              } else {
+                cy.log("not enough pax", paxValue).then(() => {
+                  cy.log("setting this to false");
+                });
+              }
+            });
         });
+      });
     });
   };
 
