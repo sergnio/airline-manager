@@ -27,7 +27,7 @@ import 'cypress-wait-until';
 
 Cypress.Commands.add('login', () => {
     cy.visit('https://tycoon.airlines-manager.com/')
-    cy.get('input#username').type('hansmue3@gmail.com')
-    cy.get('input#password').type('Bison333')
+    cy.get('input#username').type(Cypress.env('username'))
+    cy.get('input#password').type(Cypress.env('password'))
     cy.get('#loginSubmit').click()
 })
