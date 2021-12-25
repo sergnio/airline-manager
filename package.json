@@ -10,8 +10,7 @@
     "cypress-wait-until": "^1.7.2"
   },
   "scripts": {
-    "cypress:open": "npx cypress open",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cypress:open": "npx cypress open"
   },
   "repository": {
     "type": "git",
