@@ -1,16 +1,5 @@
 /// <reference types="cypress" />
 
-// Welcome to Cypress!
-//
-// This spec file contains a variety of sample tests
-// for a todo list app that are designed to demonstrate
-// the power of writing tests in Cypress.
-//
-// To learn more about how Cypress works and
-// what makes it such an awesome testing tool,
-// please read our getting started guide:
-// https://on.cypress.io/introduction-to-cypress
-
 const filePath = "cypress/fixtures/shouldContinueFindingRoutes.txt";
 
 /**
@@ -21,9 +10,15 @@ const filePath = "cypress/fixtures/shouldContinueFindingRoutes.txt";
  * @param {array} routeList
  */
 const findRoute = (planeIndex, planeList) => {
+  cy.contains(" Use -").click();
+  cy.wait(500);
+  // this can be dynamic
+  cy.get(`span#${Cypress.env("airportHub")}`).click();
+  cy.wait(500);
+  
   cy.wrap(planeList[planeIndex])
     .contains(": 0%")
-    .click()
+    .click({ force: true })
     .then(() => {
       // base case - if we're at the end, break out
       if (planeIndex >= planeList.length) {
@@ -50,7 +45,7 @@ const findRoute = (planeIndex, planeList) => {
                 .click()
                 .then(() => {
                   cy.log("clicked submit.. recursing");
-                  cy.wait(4000);
+                  cy.reload()
                   findRoute(planeIndex + 1, planeList);
                 });
             } else {
@@ -64,26 +59,12 @@ const findRoute = (planeIndex, planeList) => {
 describe("example to-do app", () => {
   const automate = () => {
     cy.visit("https://tycoon.airlines-manager.com/network/planning");
-
-    cy.contains(" Use -").click();
-    cy.wait(500);
-    // this can be dynamic
-    cy.get(`span#${Cypress.env("airportHub")}`).click();
-    cy.wait(500);
-
-    // Look in the box that has all aircrafts
-    cy.get(".aircraftsBox").each((aircraftBox, index, $list) => {
-      // within that, find the "boxes" which have 6 aircrafts
-      // loop through each of the planes (6 times)
-      cy.get("div.aircraftListMiniBox").each(
-        ($plane, planeIndex, planeList) => {
-          // now find the routes which have 1195 passengers
-          // ** iterate over the routes **
-          // loop thru each route
-
-          findRoute(planeIndex, planeList);
-        }
-      );
+    // loop through each of the planes (6 times)
+    cy.get("div.aircraftListMiniBox").each(($plane, planeIndex, planeList) => {
+      // now find the routes which have 1195 passengers
+      // ** iterate over the routes **
+      // loop thru each route
+      findRoute(planeIndex, planeList);
     });
   };
 
@@ -97,6 +78,6 @@ describe("example to-do app", () => {
   3 - schedule
   */
   it("navigate to the scheduling page", () => {
-    automate();
+    automate()
   });
 });
