@@ -11,8 +11,7 @@
   },
   "scripts": {
     "cypress:open": "npx cypress open",
-    "cypress:run": "npx cypress run --spec \"cypress/integration/playgame.spec.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cypress:run": "npx cypress run --spec \"cypress/integration/playgame.spec.js\""
   },
   "repository": {
     "type": "git",
