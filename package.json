@@ -10,7 +10,8 @@
     "cypress-wait-until": "^1.7.2"
   },
   "scripts": {
-    "cypress:open": "npx cypress open"
+    "cypress:open": "npx cypress open",
+    "cypress:run": "npx cypress run --spec \"cypress/integration/playgame.spec.js\""
   },
   "repository": {
     "type": "git",
