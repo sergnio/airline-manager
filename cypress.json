@@ -1,1 +1,6 @@
-{}
+{
+  "env": {
+    "airportHub": "airport_52",
+    "paxMinimum": 1195
+  }
+}
