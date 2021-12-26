@@ -41,7 +41,7 @@ const findRoute = (planeIndex, planeList) => {
             // text is formatted like "1190 PAX"
             const paxValue = theText.split(" ")[0];
 
-            if (paxValue >= 1195) {
+            if (paxValue >= Cypress.env("paxMinimum")) {
               // selects the routes for all days and saves it
               cy.get("td#caseIndex0").click();
               cy.log("Great success", paxValue);
@@ -68,7 +68,7 @@ describe("example to-do app", () => {
     cy.contains(" Use -").click();
     cy.wait(500);
     // this can be dynamic
-    cy.get("span#airport_52").click();
+    cy.get(`span#${Cypress.env("airportHub")}`).click();
     cy.wait(500);
 
     // Look in the box that has all aircrafts
