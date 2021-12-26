@@ -10,12 +10,6 @@ const filePath = "cypress/fixtures/shouldContinueFindingRoutes.txt";
  * @param {array} routeList
  */
 const findRoute = (planeIndex, planeList) => {
-  cy.contains(" Use -").click();
-  cy.wait(500);
-  // this can be dynamic
-  cy.get(`span#${Cypress.env("airportHub")}`).click();
-  cy.wait(500);
-  
   cy.wrap(planeList[planeIndex])
     .contains(": 0%")
     .click({ force: true })
@@ -45,7 +39,6 @@ const findRoute = (planeIndex, planeList) => {
                 .click()
                 .then(() => {
                   cy.log("clicked submit.. recursing");
-                  cy.reload()
                   findRoute(planeIndex + 1, planeList);
                 });
             } else {
@@ -59,6 +52,13 @@ const findRoute = (planeIndex, planeList) => {
 describe("example to-do app", () => {
   const automate = () => {
     cy.visit("https://tycoon.airlines-manager.com/network/planning");
+
+    cy.contains(" Use -").click();
+    cy.wait(500);
+    // this can be dynamic
+    cy.get(`span#${Cypress.env("airportHub")}`).click();
+    cy.wait(1000);
+
     // loop through each of the planes (6 times)
     cy.get("div.aircraftListMiniBox").each(($plane, planeIndex, planeList) => {
       // now find the routes which have 1195 passengers

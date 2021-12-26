@@ -1,5 +1,5 @@
 {
-  "video": false,
+  "numTestsKeptInMemory": 0,
   "env": {
     "airportHub": "airport_52",
     "paxMinimum": 1195
